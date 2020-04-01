@@ -72,7 +72,7 @@ Full example usage:
 
 ```
 module "ghostblog" {
-  source = "../ghostblog"
+  source = "github.com/elijahsgh/terraform-gke-ghost"
   db_instance          = "<YOUR DB INSTANCE>"
   db_password          = "<YOUR DB PASSWORD>"
   db_ip                = "<YOUR DB IP>"
