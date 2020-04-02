@@ -30,7 +30,7 @@ resource "google_compute_url_map" "ghostcms" {
 
     path_rule {
       paths = [
-        "${lookup(var.ghost_envvars, "storage__gcloud__assetPath", "")}/*",
+        "/${trimsuffix(trimprefix(lookup(var.ghost_envvars, "storage__gcloud__assetPath", ""), "/"), "/")}/*",
       ]
       service = google_compute_backend_bucket.ghostcms.self_link
     }
