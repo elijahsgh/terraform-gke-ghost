@@ -19,15 +19,23 @@ resource "google_compute_url_map" "ghostcms" {
 
   host_rule {
     hosts = [
-      replace(var.ghost_envvars.storage__gcloud__assetDomain, "/", "")
+      var.ghost_envvars.storage__gcloud__assetDomain
     ]
     path_matcher = "path-matcher-1"
   }
 
   path_matcher {
-    default_service = google_compute_backend_bucket.ghostcms.self_link
+    default_service = var.ghost_envvars.storage__gcloud__assetDomain == replace(replace(var.ghost_envvars.url, "https://", ""), "http://", "") ? data.google_compute_backend_service.backend_service.self_link : google_compute_backend_bucket.ghostcms.self_link
     name            = "path-matcher-1"
+
+    path_rule {
+      paths = [
+        "${var.ghost_envvars.storage__gcloud__assetPath}/*",
+      ]
+      service = google_compute_backend_bucket.ghostcms.self_link
+    }
   }
+
 }
 
 resource "google_compute_managed_ssl_certificate" "ghostcms" {
@@ -36,10 +44,10 @@ resource "google_compute_managed_ssl_certificate" "ghostcms" {
   type     = "MANAGED"
 
   managed {
-    domains = [
+    domains = distinct([
       replace(replace(var.ghost_envvars.url, "https://", ""), "http://", ""),
       replace(var.ghost_envvars.storage__gcloud__assetDomain, "/", "")
-    ]
+    ])
   }
 }
 
