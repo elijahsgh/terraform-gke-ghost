@@ -17,6 +17,10 @@ variable "prefix" {}
 
 variable "backend_service_name" {}
 
+variable "external_ip" {
+  default = ""
+}
+
 variable "ghost_envvars" {
   default = {}
 }

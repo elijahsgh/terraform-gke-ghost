@@ -113,7 +113,7 @@ resource "kubernetes_ingress" "ghostcms" {
 
 resource "kubernetes_service_account" "ghostcms_serviceaccount" {
   metadata {
-    name      = "${var.prefix}-ghostcms-serviceaccount"
+    name      = "${var.prefix}-ghostcms"
     namespace = kubernetes_namespace.ghostcms.metadata[0].name
 
     annotations = {

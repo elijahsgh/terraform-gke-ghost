@@ -1,5 +1,6 @@
 resource "google_compute_address" "ghostcms" {
   name         = "${var.prefix}-ghostcms"
+  count        = var.external_ip == "" ? 1 : 0
   network_tier = "STANDARD"
 }
 
@@ -67,7 +68,7 @@ resource "google_compute_target_https_proxy" "ghostcms" {
 
 resource "google_compute_forwarding_rule" "ghostcms-http" {
   all_ports             = false
-  ip_address            = google_compute_address.ghostcms.address
+  ip_address            = var.external_ip == "" ? google_compute_address.ghostcms[0].address : var.external_ip
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL"
   name                  = "${var.prefix}-ghostcms-http"
@@ -80,7 +81,7 @@ resource "google_compute_forwarding_rule" "ghostcms-http" {
 
 resource "google_compute_forwarding_rule" "ghostcms-https" {
   all_ports             = false
-  ip_address            = google_compute_address.ghostcms.address
+  ip_address            = var.external_ip == "" ? google_compute_address.ghostcms[0].address : var.external_ip
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL"
   name                  = "${var.prefix}-ghostcms-https"
