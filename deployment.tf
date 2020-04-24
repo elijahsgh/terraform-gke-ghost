@@ -30,6 +30,13 @@ resource "kubernetes_deployment" "ghostcms" {
         service_account_name            = kubernetes_service_account.ghostcms_serviceaccount.metadata[0].name
 
         volume {
+          name = "ghostcontent"
+          persistent_volume_claim {
+            claim_name = kubernetes_persistent_volume_claim.ghostcms.metadata[0].name
+          }
+        }
+        
+        volume {
           name = "ghostcontent-key"
           secret {
             secret_name = kubernetes_secret.ghostcms_content_key.metadata[0].name
@@ -37,6 +44,23 @@ resource "kubernetes_deployment" "ghostcms" {
               key  = "key.json"
               path = "key.json"
             }
+          }
+        }
+
+        init_container {
+          name  = "copycontent"
+          image = "gcr.io/tamarintech-sites/ghostcms"
+          command = [
+            "sh", "-c", "chown -R ghostuser: /srv/ghost/content;false | cp -iarv /srv/ghost/current/content/. /srv/ghost/content || true"
+          ]
+
+          security_context {
+            run_as_user = 0
+          }
+
+          volume_mount {
+            name       = "ghostcontent"
+            mount_path = "/srv/ghost/content"
           }
         }
 
@@ -101,6 +125,11 @@ resource "kubernetes_deployment" "ghostcms" {
           port {
             name           = "http"
             container_port = 2368
+          }
+
+          volume_mount {
+            name       = "ghostcontent"
+            mount_path = "/srv/ghost/content"
           }
 
           volume_mount {
