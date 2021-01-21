@@ -4,7 +4,7 @@ resource "kubernetes_deployment" "ghostcms" {
     namespace = kubernetes_namespace.ghostcms.metadata[0].name
     labels = {
       app           = "ghostcms"
-      ghostsitename = "${var.prefix}"
+      ghostsitename = var.prefix
     }
   }
 
@@ -14,7 +14,7 @@ resource "kubernetes_deployment" "ghostcms" {
     selector {
       match_labels = {
         app           = "ghostcms"
-        ghostsitename = "${var.prefix}"
+        ghostsitename = var.prefix
       }
     }
 
@@ -22,7 +22,7 @@ resource "kubernetes_deployment" "ghostcms" {
       metadata {
         labels = {
           app           = "ghostcms"
-          ghostsitename = "${var.prefix}"
+          ghostsitename = var.prefix
         }
       }
       spec {
@@ -35,7 +35,7 @@ resource "kubernetes_deployment" "ghostcms" {
             claim_name = kubernetes_persistent_volume_claim.ghostcms.metadata[0].name
           }
         }
-        
+
         volume {
           name = "ghostcontent-key"
           secret {

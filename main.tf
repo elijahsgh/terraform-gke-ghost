@@ -1,19 +1,3 @@
-provider google {
-  project = var.project
-  zone    = var.zone
-  version = "~> 3.13"
-}
-
-provider google-beta {
-  project = var.project
-  zone    = var.zone
-  version = "~> 3.13"
-}
-
-provider kubernetes {
-  version = "~>1.11"
-}
-
 resource "google_sql_database" "ghostcms" {
   name     = "${var.prefix}-ghostcms"
   instance = var.db_instance

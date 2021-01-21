@@ -72,7 +72,7 @@ resource "kubernetes_service" "ghostcms" {
   spec {
     selector = {
       app           = "ghostcms"
-      ghostsitename = "${var.prefix}"
+      ghostsitename = var.prefix
     }
 
     port {
