@@ -11,6 +11,13 @@ resource "kubernetes_stateful_set" "ghostcms" {
   spec {
     service_name = kubernetes_service.ghostcms.metadata[0].name
 
+    update_strategy {
+      type = "RollingUpdate"
+
+      rolling_update {
+        partition = 0
+      }
+    }
     selector {
       match_labels = {
         app           = "ghostcms"
