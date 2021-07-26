@@ -1,4 +1,4 @@
-resource "kubernetes_deployment" "ghostcms" {
+resource "kubernetes_stateful_set" "ghostcms" {
   metadata {
     name      = "${var.prefix}-ghostcms"
     namespace = kubernetes_namespace.ghostcms.metadata[0].name
@@ -9,7 +9,7 @@ resource "kubernetes_deployment" "ghostcms" {
   }
 
   spec {
-    replicas = 1
+    service_name = kubernetes_service.ghostcms.metadata[0].name
 
     selector {
       match_labels = {
