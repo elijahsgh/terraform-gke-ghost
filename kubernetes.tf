@@ -87,13 +87,9 @@ resource "kubernetes_service" "ghostcms" {
 
 resource "kubernetes_ingress" "ghostcms" {
   metadata {
-    name      = "${var.prefix}-ghostcms"
-    namespace = kubernetes_namespace.ghostcms.metadata[0].name
-    annotations = {
-      "kubernetes.io/ingress.class"                    = "nginx"
-      "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
-      "nginx.ingress.kubernetes.io/rewrite-target"     = "/"
-    }
+    name        = "${var.prefix}-ghostcms"
+    namespace   = kubernetes_namespace.ghostcms.metadata[0].name
+    annotations = var.ingress_annotations
   }
 
   spec {

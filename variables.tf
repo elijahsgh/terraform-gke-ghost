@@ -13,6 +13,7 @@ variable "project" {}
 variable "zone" {}
 
 variable "region" {}
+
 variable "prefix" {}
 
 variable "backend_service_name" {}
@@ -22,5 +23,13 @@ variable "external_ip" {
 }
 
 variable "ghost_envvars" {
+  default = {}
+}
+
+variable "create_load_balancer" {
+  default = true
+}
+
+variable "ingress_annotations" {
   default = {}
 }
