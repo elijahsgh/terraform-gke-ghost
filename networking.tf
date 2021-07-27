@@ -1,6 +1,6 @@
 resource "google_compute_address" "ghostcms" {
+  count        = (var.create_load_balancer == true || var.external_ip != "") ? 1 : 0
   name         = "${var.prefix}-ghostcms"
-  count        = var.external_ip == "" ? 1 : 0
   network_tier = "STANDARD"
 }
 
