@@ -85,7 +85,30 @@ resource "kubernetes_service" "ghostcms" {
   }
 }
 
-resource "kubernetes_ingress" "ghostcms" {
+# resource "kubernetes_ingress_v1" "ghostcms" {
+#   metadata {
+#     name        = "${var.prefix}-ghostcms"
+#     namespace   = kubernetes_namespace.ghostcms.metadata[0].name
+#     annotations = var.ingress_annotations
+#   }
+
+#   spec {
+#     rule {
+#       host = replace(replace(var.ghost_envvars.url, "https://", ""), "http://", "")
+#       http {
+#         path {
+#           backend {
+#             service_name = kubernetes_service.ghostcms.metadata[0].name
+#             service_port = "http"
+#           }
+#         }
+#       }
+#     }
+#   }
+# }
+
+
+resource "kubernetes_ingress_v1" "ghostcms" {
   metadata {
     name        = "${var.prefix}-ghostcms"
     namespace   = kubernetes_namespace.ghostcms.metadata[0].name
@@ -98,8 +121,12 @@ resource "kubernetes_ingress" "ghostcms" {
       http {
         path {
           backend {
-            service_name = kubernetes_service.ghostcms.metadata[0].name
-            service_port = "http"
+            service { 
+              name = kubernetes_service.ghostcms.metadata[0].name
+              port {
+                name = "http"
+              }
+            }
           }
         }
       }
