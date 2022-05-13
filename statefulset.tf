@@ -58,7 +58,7 @@ resource "kubernetes_stateful_set" "ghostcms" {
           name  = "copycontent"
           image = var.init_container_image != "" ? var.init_container_image : var.ghostimage
           command = [
-            "sh", "-c", "chown -R ghostuser: /srv/ghost/content;false | cp -iarv /srv/ghost/current/content/. /srv/ghost/content || true"
+            "sh", "-c", "cp -farv /var/lib/ghost/content.orig/. /var/lib/ghost/content; chown -R node: /var/lib/ghost/content;"
           ]
 
           security_context {
@@ -67,7 +67,7 @@ resource "kubernetes_stateful_set" "ghostcms" {
 
           volume_mount {
             name       = "ghostcontent"
-            mount_path = "/srv/ghost/content"
+            mount_path = "/var/lib/ghost/content"
           }
         }
 
@@ -136,7 +136,7 @@ resource "kubernetes_stateful_set" "ghostcms" {
 
           volume_mount {
             name       = "ghostcontent"
-            mount_path = "/srv/ghost/content"
+            mount_path = "/var/lib/ghost/content"
           }
 
           volume_mount {
