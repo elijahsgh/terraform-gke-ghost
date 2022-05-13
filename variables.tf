@@ -18,6 +18,10 @@ variable "prefix" {}
 
 variable "backend_service_name" {}
 
+variable "init_container_image" {
+  default = ""
+}
+
 variable "external_ip" {
   default = ""
 }

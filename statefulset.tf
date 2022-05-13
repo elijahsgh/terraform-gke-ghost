@@ -56,7 +56,7 @@ resource "kubernetes_stateful_set" "ghostcms" {
 
         init_container {
           name  = "copycontent"
-          image = "gcr.io/tamarintech-sites/ghostcms"
+          image = var.init_container_image != "" ? var.init_container_image : var.ghostimage
           command = [
             "sh", "-c", "chown -R ghostuser: /srv/ghost/content;false | cp -iarv /srv/ghost/current/content/. /srv/ghost/content || true"
           ]
