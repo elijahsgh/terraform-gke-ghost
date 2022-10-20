@@ -121,7 +121,7 @@ resource "kubernetes_ingress_v1" "ghostcms" {
       http {
         path {
           backend {
-            service { 
+            service {
               name = kubernetes_service.ghostcms.metadata[0].name
               port {
                 name = "http"

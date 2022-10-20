@@ -58,7 +58,7 @@ resource "kubernetes_stateful_set" "ghostcms" {
           name  = "copycontent"
           image = var.init_container_image != "" ? var.init_container_image : var.ghostimage
           command = [
-            "sh", "-c", "cp -farv /var/lib/ghost/content.orig/. /var/lib/ghost/content; chown -R node: /var/lib/ghost/content;"
+            "sh", "-c", "cp -farv /var/lib/ghost/content.orig/. /var/lib/ghost/content || true; chown -R node: /var/lib/ghost/content;"
           ]
 
           security_context {
@@ -76,7 +76,8 @@ resource "kubernetes_stateful_set" "ghostcms" {
           image = var.ghostimage
 
           env {
-            name  = "database__connection__host"
+            name = "database__connection__host"
+            #            value = var.db_ip
             value = kubernetes_endpoints.ghostdb.metadata[0].name
           }
 
