@@ -104,7 +104,7 @@ resource "kubernetes_stateful_set" "ghostcms" {
 
           env {
             name  = "database__connection__database"
-            value = google_sql_database.ghostcms.name
+            value = google_sql_database.db.name
           }
 
           env {

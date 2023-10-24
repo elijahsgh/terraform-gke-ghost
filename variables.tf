@@ -1,6 +1,8 @@
 variable "db_instance" {}
 
-variable "db_password" {}
+variable "db_password" {
+  default = null
+}
 
 variable "db_ip" {}
 
@@ -16,8 +18,6 @@ variable "region" {}
 
 variable "prefix" {}
 
-variable "backend_service_name" {}
-
 variable "init_container_image" {
   default = ""
 }
@@ -30,10 +30,10 @@ variable "ghost_envvars" {
   default = {}
 }
 
-variable "create_load_balancer" {
-  default = true
+variable "ingress_annotations" {
+  default = {}
 }
 
-variable "ingress_annotations" {
+variable "service_annotations" {
   default = {}
 }

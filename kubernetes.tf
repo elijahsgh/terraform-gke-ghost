@@ -43,8 +43,8 @@ resource "kubernetes_secret" "ghostcmsdb_secret" {
   }
 
   data = {
-    username = google_sql_user.ghostcms.name
-    password = google_sql_user.ghostcms.password
+    username = google_sql_user.sqluser.name
+    password = google_sql_user.sqluser.password
   }
 }
 
@@ -61,12 +61,9 @@ resource "kubernetes_secret" "ghostcmsmail_secret" {
 
 resource "kubernetes_service" "ghostcms" {
   metadata {
-    name      = "${var.prefix}-ghostcms"
-    namespace = kubernetes_namespace.ghostcms.metadata[0].name
-    annotations = {
-      "cloud.google.com/neg"                = "{\"ingress\": true}"
-      "cloud.google.com/load-balancer-type" = "Internal"
-    }
+    name        = "${var.prefix}-ghostcms"
+    namespace   = kubernetes_namespace.ghostcms.metadata[0].name
+    annotations = var.service_annotations
   }
 
   spec {
@@ -77,60 +74,18 @@ resource "kubernetes_service" "ghostcms" {
 
     port {
       name        = "http"
-      port        = 8080
-      target_port = "http"
+      port        = 80
+      protocol    = "TCP"
+      target_port = 2368
     }
 
-    type = "NodePort"
-  }
-}
-
-# resource "kubernetes_ingress_v1" "ghostcms" {
-#   metadata {
-#     name        = "${var.prefix}-ghostcms"
-#     namespace   = kubernetes_namespace.ghostcms.metadata[0].name
-#     annotations = var.ingress_annotations
-#   }
-
-#   spec {
-#     rule {
-#       host = replace(replace(var.ghost_envvars.url, "https://", ""), "http://", "")
-#       http {
-#         path {
-#           backend {
-#             service_name = kubernetes_service.ghostcms.metadata[0].name
-#             service_port = "http"
-#           }
-#         }
-#       }
-#     }
-#   }
-# }
-
-
-resource "kubernetes_ingress_v1" "ghostcms" {
-  metadata {
-    name        = "${var.prefix}-ghostcms"
-    namespace   = kubernetes_namespace.ghostcms.metadata[0].name
-    annotations = var.ingress_annotations
+    type = "ClusterIP"
   }
 
-  spec {
-    rule {
-      host = replace(replace(var.ghost_envvars.url, "https://", ""), "http://", "")
-      http {
-        path {
-          backend {
-            service {
-              name = kubernetes_service.ghostcms.metadata[0].name
-              port {
-                name = "http"
-              }
-            }
-          }
-        }
-      }
-    }
+  lifecycle {
+    ignore_changes = [
+      metadata[0].annotations["cloud.google.com/neg-status"]
+    ]
   }
 }
 
@@ -140,7 +95,7 @@ resource "kubernetes_service_account" "ghostcms_serviceaccount" {
     namespace = kubernetes_namespace.ghostcms.metadata[0].name
 
     annotations = {
-      "iam.gke.io/gcp-service-account" = google_service_account.ghostcms_content.email
+      "iam.gke.io/gcp-service-account" = google_service_account.content.email
     }
   }
 }

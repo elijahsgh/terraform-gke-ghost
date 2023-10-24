@@ -1,11 +1,11 @@
 resource "google_service_account_key" "ghostcms_content_key" {
-  service_account_id = google_service_account.ghostcms_content.name
+  service_account_id = google_service_account.content.name
 }
 
 resource "google_storage_bucket_iam_member" "ghostcms_content_iam" {
   bucket = google_storage_bucket.ghostcms_content.name
   role   = "roles/storage.admin"
-  member = "serviceAccount:${google_service_account.ghostcms_content.email}"
+  member = "serviceAccount:${google_service_account.content.email}"
 }
 
 resource "google_storage_bucket_iam_member" "ghostcms_public_iam" {
@@ -16,7 +16,7 @@ resource "google_storage_bucket_iam_member" "ghostcms_public_iam" {
 
 resource "kubernetes_secret" "ghostcms_content_key" {
   metadata {
-    name      = "${var.prefix}-ghostcms-content-key"
+    name      = "${var.prefix}-content-key"
     namespace = kubernetes_namespace.ghostcms.metadata[0].name
   }
 
@@ -26,7 +26,7 @@ resource "kubernetes_secret" "ghostcms_content_key" {
 }
 
 resource "google_storage_bucket" "ghostcms_content" {
-  name = "${var.prefix}-ghostcms-content"
+  name = "${var.prefix}-content"
 
   storage_class = "REGIONAL"
   location      = var.region
