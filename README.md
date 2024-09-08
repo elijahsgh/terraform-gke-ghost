@@ -100,7 +100,7 @@ Certificates may take some time to provision. You should already have your DNS s
 
 ## Additional Notes
 
-Ghost does not support sharding or multiple instances. A _Deployment_ is used here but you may consider a StatefulSet or more appropriate object that ensures At-Most-One instances of the Ghost container. Deployment was an opinionated choice here.
+Ghost does not support sharding or multiple instances.
 
 This will most likely not work if you specify `http://` as your URL/proto.
 
