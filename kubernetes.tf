@@ -99,3 +99,7 @@ resource "kubernetes_service_account" "ghostcms_serviceaccount" {
     }
   }
 }
+
+output "namespace" {
+  value = kubernetes_namespace.ghostcms.metadata[0].name
+}

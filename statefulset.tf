@@ -61,6 +61,15 @@ resource "kubernetes_stateful_set" "ghostcms" {
             "sh", "-c", "cp -farv /var/lib/ghost/content.orig/. /var/lib/ghost/content || true; chown -R node: /var/lib/ghost/content;"
           ]
 
+          # # Migration from bucket
+          # name  = "migratebucket"
+          # image = "google/cloud-sdk:slim"
+          # command = [
+          #   "sh",
+          #   "-c",
+          #   "until gsutil -m rsync -r -d  gs://${google_storage_bucket.ghostcms_content.name} /var/lib/ghost/content && chown -R node: /var/lib/ghost/content; do sleep 5; echo 'Retrying rsync...'; done"
+          # ]
+
           security_context {
             run_as_user = 0
           }
@@ -160,10 +169,10 @@ resource "kubernetes_stateful_set" "ghostcms" {
               }
             }
 
-            initial_delay_seconds = 10
-            period_seconds        = 5
+            initial_delay_seconds = 20
+            period_seconds        = 60
             failure_threshold     = 3
-            timeout_seconds       = 2
+            timeout_seconds       = 5
           }
         }
       }

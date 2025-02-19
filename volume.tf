@@ -5,9 +5,10 @@ resource "google_compute_disk" "ghostcms" {
 
   lifecycle {
     ignore_changes = [
-      labels
+      terraform_labels["goog-gke-volume"],
     ]
   }
+
 }
 
 resource "kubernetes_persistent_volume" "ghostcms" {
